@@ -207,6 +207,17 @@ public class Graph {
             }
             return null;
         }
+
+        public Node getRoomNotWithin2StepsOfPlayer(Node playerRoom) {
+            for (Node n : getNeighbors()) {
+                if (!n.equals(playerRoom)) {
+                    for (Node neighbor : n.getNeighbors()) {
+                        if (!neighbor.equals(playerRoom)) return n;
+                    }
+                }
+            }
+            return null;
+        }
     }
 }
 

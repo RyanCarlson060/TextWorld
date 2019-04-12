@@ -10,10 +10,12 @@ public class Wumpus extends Creature {
     @Override
     protected Graph.Node move() {
         currentRoom.removeCreature(this);
-        if(currentRoom.getRoomNearPlayerWithin2Steps(player.getCurrentRoom()) == null) {
+        if (currentRoom.getRoomNearPlayerWithin2Steps(player.getCurrentRoom()) == null) {
             currentRoom = currentRoom.getRandomNeighborBesides(player.getCurrentRoom());
-        }else if(currentRoom.getRoomNotWithin2StepsOfPlayer(player.getCurrentRoom())==null && !(currentRoom.equals(player.getCurrentRoom()))){
+        } else if (currentRoom.getRoomNotWithin2StepsOfPlayer(player.getCurrentRoom()) == null) {
             currentRoom = currentRoom.getRandomNeighborBesides(player.getCurrentRoom());
+        } else {
+            currentRoom = currentRoom.getRoomNotWithin2StepsOfPlayer(player.getCurrentRoom());
         }
         currentRoom.addCreature(this);
         return currentRoom;
@@ -21,7 +23,7 @@ public class Wumpus extends Creature {
 
     @Override
     protected void act() {
-        if(currentRoom.equals(player.getCurrentRoom())){
+        if (currentRoom.equals(player.getCurrentRoom())) {
             player.heal();
         }
     }
