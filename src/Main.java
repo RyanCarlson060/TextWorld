@@ -19,38 +19,7 @@ public class Main {
 
         g.getNode("hall").addItem(new Item("ball", "cool ball"));
 
-        for (int i = 0; i < 200; i++) {
-            Creature c = new Chicken(g.getNode("hall"), p1);
-            g.addCreature(c);
-        }
-        for (int i = 0; i < 100; i++) {
-            Creature c = new Chicken(g.getNode("closet"), p1);
-            g.addCreature(c);
-        }
-        for (int i = 0; i < 150; i++) {
-            Creature c = new Chicken(g.getNode("dungeon"), p1);
-            g.addCreature(c);
-        }
-
-        for (int i = 0; i < 50; i++) {
-            Creature c = new Wumpus(g.getNode("hall"), p1);
-            g.addCreature(c);
-        }
-
-        for (int i = 0; i < 150; i++) {
-            Creature c = new Wumpus(g.getNode("dungeon"), p1);
-            g.addCreature(c);
-        }
-
-        for (int i = 0; i < 100; i++) {
-            Creature c = new Wumpus(g.getNode("closet"), p1);
-            g.addCreature(c);
-        }
-
-        for (int i = 0; i < 2; i++) {
-            Creature c = new Popstar(g.getNode("closet"), p1);
-            g.addCreature(c);
-        }
+        g.addRandomCreatures(p1);
 
         String response = "";
         Scanner in = new Scanner(System.in);

@@ -40,6 +40,30 @@ public class Graph {
         return nodes.get(name);
     }
 
+    public void addRandomCreatures(Player p1) {
+        for (int i = 0; i < (int) (Math.random() * 200) + 50; i++) {
+            Creature c = new Chicken(getRandomRoom(), p1);
+            this.addCreature(c);
+        }
+
+        for (int i = 0; i < (int) (Math.random() * 75) + 25; i++) {
+            Creature c = new Wumpus(getRandomRoom(), p1);
+            this.addCreature(c);
+        }
+
+        for (int i = 0; i < (int) (Math.random() * 10) + 1; i++) {
+            Creature c = new Popstar(getRandomRoom(), p1);
+            this.addCreature(c);
+        }
+
+
+    }
+
+    private Node getRandomRoom() {
+        ArrayList<Node> nodeList = new ArrayList<Node>(nodes.values());
+        return nodeList.get((int) (nodeList.size() * Math.random()));
+    }
+
     public class Node {
         private String name;
         private HashMap<String, Node> neighbors;
