@@ -1,7 +1,10 @@
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        HashMap<String, Command> commands = new HashMap<>();
 
         Graph g = new Graph();
         g.addNode("hall", "darkness, only darkness");
@@ -10,89 +13,103 @@ public class Main {
 
         g.addDirectedEdge("hall", "dungeon");
         g.addUndirectedEdge("hall", "closet");
+
         Player p1 = new Player("Ryan", "cool");
         p1.setCurrentRoom(g.getNode("hall"));
 
         g.getNode("hall").addItem(new Item("ball", "cool ball"));
 
+        for (int i = 0; i < 200; i++) {
+            Creature c = new Chicken(g.getNode("hall"), p1);
+            g.addCreature(c);
+        }
+        for (int i = 0; i < 100; i++) {
+            Creature c = new Chicken(g.getNode("closet"), p1);
+            g.addCreature(c);
+        }
+        for (int i = 0; i < 150; i++) {
+            Creature c = new Chicken(g.getNode("dungeon"), p1);
+            g.addCreature(c);
+        }
+
+        for (int i = 0; i < 50; i++) {
+            Creature c = new Wumpus(g.getNode("hall"), p1);
+            g.addCreature(c);
+        }
+
+        for (int i = 0; i < 150; i++) {
+            Creature c = new Wumpus(g.getNode("dungeon"), p1);
+            g.addCreature(c);
+        }
+
+        for (int i = 0; i < 100; i++) {
+            Creature c = new Wumpus(g.getNode("closet"), p1);
+            g.addCreature(c);
+        }
+
+        for (int i = 0; i < 2; i++) {
+            Creature c = new Popstar(g.getNode("closet"), p1);
+            g.addCreature(c);
+        }
 
         String response = "";
         Scanner in = new Scanner(System.in);
+        initCommands(commands, g, in, p1);
 
         System.out.println("go, look, add room, take item, drop item or quit");
         do {
             System.out.println("You are currently in the " + p1.getCurrentRoom().getName());
             System.out.println("What do you want to do?");
             response = in.nextLine();
-
-            if (response.equals("go")) {
-                go(g,in,p1);
-            } else if (response.equals("look")) {
-                look(p1);
-            } else if (response.equals("add room")) {
-                addRoom(g, in, p1);
-            } else if (response.equals("take item")) {
-                takeItem(g, in, p1);
-
-            } else if (response.equals("drop item")) {
-                dropItem(g, in, p1);
-            } else if (response.equals("quit")) {
+            Command command = lookupCommand(response, commands);
+            if (command != null) {
+                command.execute();
             } else {
-                System.out.println("go, look, add room, or quit");
+                System.out.println("go, look, take item, drop item, add room, or quit");
+            }
+
+
+            moveCreatures(g);
+            creaturesAct(g);
+            if (!p1.isAlive()) {
+                response = ("quit");
+                System.out.println("You died");
             }
 
         } while (!response.equals("quit"));
 
     }
 
-    private static void go(Graph g, Scanner in, Player p1) {
-        String response;
-        System.out.println("name room");
-        response = in.nextLine();
-        if (g.getNode(p1.getCurrentRoom().getName()).getNeighbor(response) == null) {
-            System.out.println("You can't go there");
-        } else {
-            p1.setCurrentRoom(g.getNode(response));
+    private static Command lookupCommand(String response, HashMap<String, Command> commands) {
+        return commands.get(response);
+    }
+
+    private static void initCommands(HashMap<String, Command> commands, Graph g, Scanner in, Player p1) {
+        commands.put("take item", new TakeItem(g, in, p1));
+        commands.put("drop item", new DropItem(g, in, p1));
+        commands.put("go", new GoTo(g, in, p1));
+        commands.put("look", new Look(g, in, p1));
+        commands.put("add room", new AddRoom(g, in, p1));
+        commands.put("quit", new Quit(g, in, p1));
+    }
+
+    private static void creaturesAct(Graph g) {
+        ArrayList<Creature> creatures = g.getCreatures();
+        for (Creature c : creatures) {
+            c.act();
+
         }
     }
 
-    private static void look(Player p1) {
-        System.out.println("You see " + p1.getCurrentRoom().getDescription());
-        System.out.println("You can pick up " + p1.getCurrentRoom().getItemNames());
-        System.out.println("You can go to " + p1.getCurrentRoom().getNeighborNames());
-    }
+    private static void moveCreatures(Graph g) {
+        ArrayList<Creature> creatures = g.getCreatures();
+        for (Creature c : creatures) {
+            c.move();
 
-    private static void dropItem(Graph g, Scanner in, Player p1) {
-        String response;
-        System.out.println("name item");
-        response = in.nextLine();
-        if (p1.getItem(response) == null) {
-            System.out.println("You don't have that item");
-        } else {
-            p1.getCurrentRoom().addItem(p1.removeItem(response));
         }
-    }
 
-    private static void takeItem(Graph g, Scanner in, Player p1) {
-        String response;
-        System.out.println("name item");
-        response = in.nextLine();
-        if (p1.getCurrentRoom().getItem(response) == null) {
-            System.out.println("That is not in the room");
-        } else {
-            p1.addItem(p1.getCurrentRoom().removeItem(response));
-        }
-    }
-
-    private static void addRoom(Graph g, Scanner in, Player p1) {
-        String response;
-        System.out.println("name room");
-        response = in.nextLine();
-        String name = new String(response);
-        System.out.println("give description");
-        response = in.nextLine();
-        String description = response;
-        g.addNode(name, description);
-        g.addDirectedEdge(p1.getCurrentRoom().getName(), name);
     }
 }
+
+
+

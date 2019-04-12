@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -5,11 +6,15 @@ public class Player {
     private String name, description;
     private HashMap<String, Item> items;
     private Graph.Node currentRoom;
+    private double health;
+    private boolean alive;
 
     public Player(String name, String description) {
         this.name = name;
         this.description = description;
         items = new HashMap<String, Item>();
+        health = 100;
+        alive = true;
     }
 
     public void addItem(Item item) {
@@ -37,4 +42,28 @@ public class Player {
     public Item getItem(String response) {
         return items.get(response);
     }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void loseHealth(double damage) {
+        health -= damage;
+        if (health <= 0) {
+            alive = false;
+        }
+    }
+
+    public void heal() {
+        if (health < 100) {
+            health += 4;
+        } else {
+            health = 100;
+        }
+    }
 }
+
+
+
+
+
