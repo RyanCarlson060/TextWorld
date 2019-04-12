@@ -6,6 +6,8 @@ import java.util.HashMap;
 public class Graph {
     private HashMap<String, Node> nodes;
     private ArrayList<Creature> creatures;
+    private String[] roomNameList = {"hall", "dungeon", "closet", "ballroom", "kitchen", "bathroom", "office", "living room", "gym"};
+    private String[] descriptionList = {"cool", "warm", "dark", "bright", "interesting stuff", "lots of toys", "awesome", "boring stuff"};
 
     public ArrayList<Creature> getCreatures() {
         return creatures;
@@ -59,9 +61,31 @@ public class Graph {
 
     }
 
-    private Node getRandomRoom() {
+    public Node getRandomRoom() {
         ArrayList<Node> nodeList = new ArrayList<Node>(nodes.values());
         return nodeList.get((int) (nodeList.size() * Math.random()));
+    }
+
+    public void generateRoomStructure() {
+        for (int i = 0; i < 8; i++) {
+            String name;
+            do {
+                name = roomNameList[(int) (Math.random() * roomNameList.length)];
+            } while (nodes.get(name) != null);
+            String description = descriptionList[(int) (Math.random() * descriptionList.length)];
+            addNode(name, description);
+            if (nodes.size() > 1) {
+                addUndirectedEdge(getRandomRoomBesides(name), name);
+            }
+        }
+    }
+
+    private String getRandomRoomBesides(String name) {
+        Node room;
+        do {
+            room = getRandomRoom();
+        } while ((room.getName()).equals(name));
+        return room.getName();
     }
 
     public class Node {
