@@ -7,17 +7,12 @@ public class Main {
         HashMap<String, Command> commands = new HashMap<>();
 
         Graph g = new Graph();
-        g.addNode("hall", "darkness, only darkness");
-        g.addNode("closet", "so many blankets in such a small closet");
-        g.addNode("dungeon", "shackles in the dungeon");
-
-        g.addDirectedEdge("hall", "dungeon");
-        g.addUndirectedEdge("hall", "closet");
+        g.generateRoomStructure();
 
         Player p1 = new Player("Ryan", "cool");
-        p1.setCurrentRoom(g.getNode("hall"));
+        p1.setCurrentRoom(g.getRandomRoom());
 
-        g.getNode("hall").addItem(new Item("ball", "cool ball"));
+        g.getRandomRoom().addItem(new Item("ball", "cool ball"));
 
         g.addRandomCreatures(p1);
 
